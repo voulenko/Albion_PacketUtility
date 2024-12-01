@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Albion_PacketUtility", "Albion_PacketUtility\Albion_PacketUtility.vcxproj", "{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Debug|x64.ActiveCfg = Debug|x64
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Debug|x64.Build.0 = Debug|x64
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Debug|x86.ActiveCfg = Debug|Win32
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Debug|x86.Build.0 = Debug|Win32
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Release|x64.ActiveCfg = Release|x64
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Release|x64.Build.0 = Release|x64
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Release|x86.ActiveCfg = Release|Win32
+		{139B5C64-FBB0-4030-BFE9-3BFBBCB86745}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3F92E48-63DF-46F3-B7B9-1FC3CDB3A811}
+	EndGlobalSection
+EndGlobal
