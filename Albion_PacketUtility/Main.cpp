@@ -2,7 +2,7 @@
 #include <iostream>
 
 int main() {
-    setlocale(LC_ALL, "Russian");
+    setlocale(LC_ALL, "Russian"); // ƒл€ консольного вывода если потребуетс€ на русском
     ImGuiManager app;
     ImGuiRenderer::done = false;
 
