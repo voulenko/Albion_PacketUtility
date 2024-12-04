@@ -8,6 +8,6 @@ public:
 	void handle(int code, const std::vector<std::pair<uint8_t, DeserializedValue>>& parameters) override {
 		std::cout << "[DEBUG] Response Handler handled" << std::endl;
 
-		ImGuiRenderer::test.push_back(data{ "00:00:00", "Response", code, parameters });
+		//ImGuiRenderer::test.push_back(data{ "00:00:00", "Response", code, parameters });
 	}
 };
