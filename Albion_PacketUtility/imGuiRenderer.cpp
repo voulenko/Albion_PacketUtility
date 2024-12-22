@@ -46,6 +46,8 @@ void ImGuiRenderer::render() {
             localtime_s(&timeInfo, &currentTime);  // safe localtime_s instead of unsafe localtime
             std::strftime(timeBuffer, sizeof(timeBuffer), "%H:%M:%S", &timeInfo);
             //test.push_back(data{ 1, "event", timeBuffer, "NULL"});
+
+            test.clear();
             
         }
         ImGui::Text(to_char((int)test.size()));
@@ -81,11 +83,92 @@ void ImGuiRenderer::render() {
                 if (ImGui::CollapsingHeader(to_char((int)test[i].parameters.size()), ImGuiTreeNodeFlags_AllowItemOverlap)) {
                     for (const auto& param : test[i].parameters) {
                         DeserializedValue params = param.second;
-                        ImGui::Text("[%d] [%s:%d] | %s",
-                            static_cast<int>(param.first),
-                            params.getTypeStr(),
-                            static_cast<int>(params.type),
-                            params.getValueStr().c_str());
+                        if (params.type == Type::ByteArray) {
+                            ImGui::Text("[%d] [%s:%d] | %s",
+                                static_cast<int>(param.first),
+                                params.getTypeStr(),
+                                static_cast<int>(params.type),
+                                params.getValueStr().c_str());
+
+
+                            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.0f, 1.0f, 0.6f, 0.5f));
+                            ImGui::SameLine();
+                            ImGui::PushID(param.first);
+                            if (ImGui::CollapsingHeader("", ImGuiTreeNodeFlags_AllowItemOverlap)) {
+                                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.6f, 1.0f));
+                                ImGui::Text("[%s]", params.getTypeStr());
+
+                                for (int i = 0; i < std::static_pointer_cast<std::vector<uint8_t>>(params.value)->size(); ++i)
+                                    ImGui::Text("[%d] %02X : %d", i, (*std::static_pointer_cast<std::vector<uint8_t>>(params.value))[i], (*std::static_pointer_cast<std::vector<uint8_t>>(params.value))[i]);
+
+                                ImGui::PopStyleColor();
+                            }
+                            ImGui::PopID();
+                            ImGui::PopStyleColor();
+                            ImGui::PopStyleVar(); // Восстанавливаем отступы
+
+                        }
+                        else if (params.type == Type::Array) {
+                            ImGui::Text("[%d] [%s:%d] | %s",
+                                static_cast<int>(param.first),
+                                params.getTypeStr(),
+                                static_cast<int>(params.type),
+                                params.getValueStr().c_str());
+
+                            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.0f, 1.0f, 0.6f, 0.5f));
+                            ImGui::SameLine();
+                            ImGui::PushID(param.first);
+
+                            DeserializedValue& param1 = *std::static_pointer_cast<DeserializedValue>(params.value);
+                            if (ImGui::CollapsingHeader("", ImGuiTreeNodeFlags_AllowItemOverlap)) {
+                                
+                                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.6f, 1.0f));
+                                ImGui::Text("[%s]", param1.getTypeStr());
+
+                                switch (param1.type) 
+                                {
+
+                                    case Type::String:
+                                        for (int i = 0; i < std::static_pointer_cast<std::vector<std::string>>(param1.value)->size(); ++i)
+                                            ImGui::Text("[%d] %s", i, (*std::static_pointer_cast<std::vector<std::string>>(param1.value))[i].c_str());
+                                        break;
+                                    case Type::Integer:
+                                        for (int i = 0; i < std::static_pointer_cast<std::vector<int32_t>>(param1.value)->size(); ++i)
+                                            ImGui::Text("[%d] %d", i, (*std::static_pointer_cast<std::vector<int32_t>>(param1.value))[i]);
+                                        break;
+                                    case Type::Long:
+                                        for (int i = 0; i < std::static_pointer_cast<std::vector<int64_t>>(param1.value)->size(); ++i)
+                                            ImGui::Text("[%d] %lld", i, (*std::static_pointer_cast<std::vector<int64_t>>(param1.value))[i]);
+                                        break;
+                                    case Type::Float:
+                                        for (int i = 0; i < std::static_pointer_cast<std::vector<float>>(param1.value)->size(); ++i)
+                                            ImGui::Text("[%d] %f", i, (*std::static_pointer_cast<std::vector<float>>(param1.value))[i]);
+                                        break;
+                                    case Type::Short:
+                                        for (int i = 0; i < std::static_pointer_cast<std::vector<int16_t>>(param1.value)->size(); ++i)
+                                            ImGui::Text("[%d] %d", i, (*std::static_pointer_cast<std::vector<int16_t>>(param1.value))[i]);
+                                        break;
+                                    default:
+                                        ImGui::Text("-----");
+                                    
+                                }
+
+
+                                ImGui::PopStyleColor();
+                            }
+                            ImGui::PopID();
+                            ImGui::PopStyleColor();
+                            ImGui::PopStyleVar(); // Восстанавливаем отступы
+                        }
+                        else {
+                            ImGui::Text("[%d] [%s:%d] | %s",
+                                static_cast<int>(param.first),
+                                params.getTypeStr(),
+                                static_cast<int>(params.type),
+                                params.getValueStr().c_str());
+                        }
                     }
                 }
                 ImGui::PopID();
