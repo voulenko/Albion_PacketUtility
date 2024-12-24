@@ -18,7 +18,7 @@ public:
         // Используем localtime_s для безопасного преобразования времени
         localtime_s(&timeInfo, &currentTime);  // safe localtime_s instead of unsafe localtime
         std::strftime(timeBuffer, sizeof(timeBuffer), "%H:%M:%S", &timeInfo);
-
+        ImGuiRenderer::log.AddLog("[%s][RESPONSE] parsed %d parameters code %d\n", timeBuffer, parameters.size(), code);
 		ImGuiRenderer::test.push_back(data{ timeBuffer, "Response", code, parameters });
 	}
 };

@@ -8,6 +8,10 @@ bool ImGuiManager::g_SwapChainOccluded = false;
 unsigned int ImGuiManager::g_ResizeWidth = 0;
 unsigned int ImGuiManager::g_ResizeHeight = 0;
 ID3D11RenderTargetView* ImGuiManager::g_mainRenderTargetView = nullptr;
+ImFont* ImGuiManager::customFont;
+bool ImGuiManager::Overlay;
+WNDCLASSEXW ImGuiManager::wc;
+HWND ImGuiManager::hwnd;
 
 ImGuiManager* imguiManager = nullptr;
 
@@ -71,11 +75,30 @@ void ImGuiManager::CleanupRenderTarget()
 ImGuiManager::ImGuiManager()
 {
     imguiManager = this;
+    if (Overlay) {
+        wc = { sizeof(wc), CS_CLASSDC | CS_OWNDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"Debugger", nullptr };
+        ::RegisterClassExW(&wc);
 
-    // Create application window
-    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
-    ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui DirectX11 Example", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+        // Создаем окно на весь экран без рамок
+        hwnd = ::CreateWindowExW(WS_EX_TOPMOST | WS_EX_LAYERED, wc.lpszClassName, L"Debugger",
+            WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+            nullptr, nullptr, wc.hInstance, nullptr);
+
+
+        // Устанавливаем окно поверх всех других
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+        // Окно становится прозрачным для кликов мыши, если нужно
+        SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
+    }
+    else {
+        wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"Debugger", nullptr };
+        ::RegisterClassExW(&wc);
+        hwnd = ::CreateWindowW(wc.lpszClassName, L"Debugger", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+    }
+
+    
+    SwitchWindowMode(Overlay);
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -93,6 +116,8 @@ ImGuiManager::ImGuiManager()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext(); // Создаем контекст
     io = ImGui::GetIO(); (void)io;// Получаем io после создания контекста
+    io.Fonts->AddFontDefault();
+    customFont = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Calibri.ttf", 14.0f, NULL, io.Fonts->GetGlyphRangesCyrillic());
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
